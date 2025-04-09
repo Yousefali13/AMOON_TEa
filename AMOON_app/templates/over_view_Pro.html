@@ -1,0 +1,372 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- مكتبة Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- AdminLTE CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+  <style>
+    .active-link { background-color: #007bff !important; color: white !important; }
+  </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+     body {
+        padding-top: 80px;
+        background-color: #f8f9fa;
+    }
+    .logo {
+        position: fixed;
+        top: 1px;
+        left: 20px;
+        width: 60px;
+        height: 60px;
+        z-index: 1100;
+    }
+    .logo img {
+        width: 100%;
+        height: auto;
+    }
+    .navbar {
+        width: 90%;
+        background-color: #343a40;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        border-radius: 5px;
+    }
+    .navbar .site-name {
+        font-size: 20px;
+        font-weight: bold;
+        color: #ffc107;
+        cursor: pointer;
+    }
+    .navbar a {
+        color: #ffffff;
+        text-decoration: none;
+        padding: 10px 15px;
+        font-size: 18px;
+    }
+    .navbar a:hover {
+        color: #ffbc03;
+    }
+    .card-custom {
+        border: none;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+        background-color: #495057;
+        color: #ffffff;
+        text-align: center;
+        font-size: 18px;
+    }
+    .stat-card {
+        border: none;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .power-icon {
+          width: 30px;
+          height: 30px;
+          position: fixed;
+          top:0px;
+          right: 0px;
+          }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini">
+   
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <a href="{% url 'home' %}" class="brand-link">
+          <img src="{% static 'images/logo.png' %}" class="brand-image img-circle elevation-3">
+          <span class="brand-text font-weight-light">AMOON</span>
+        </a>
+        <div class="sidebar">
+          <div class="user-panel mt-3 d-flex">
+            <div class="image">
+              <div class="text-center mb-3">
+                <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_user.png' %}{% endif %}" class="rounded-circle" width="80" height="80">
+            </div>          </div>
+            <div class="info">
+              <a href="{% url 'profile' %}" class="d-block">{{ user.get_full_name }}</a>
+            </div>
+          </div>
+          <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" id="sidebar-menu">
+              <li class="nav-item">
+                <a href="{% url 'home' %}" class="nav-link" id="dashboard-link">
+                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                  <p>لوحة التحكم</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'accounting_dashboard' %}" class="nav-link" id="accounting-link">
+                  <i class="nav-icon fas fa-calculator"></i>
+                  <p>المحاسبة</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'messages_list' %}">
+                    <i class="fas fa-comments"></i> الرسائل
+                </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'dashboard_view1' %}">
+                  <i class="fas fa-boxes"></i> المخزون
+              </a>
+          </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" id="reports-link">
+                  <i class="nav-icon fas fa-chart-line"></i>
+                  <p>التقارير</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'user_list' %}" class="nav-link" id="users-link">
+                  <i class="nav-icon fas fa-users"></i>
+                  <p>إدارة المستخدمين</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'settings' %}" class="nav-link" id="settings-link">
+                  <i class="nav-icon fas fa-cogs"></i>
+                  <p>الإعدادات</p>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+    <!-- شعار الموقع -->
+    <!-- <div class="logo">
+        <img src="{% static 'images/logo.png' %}" alt="logo"> -->
+    <!-- </div> -->
+    <!-- أيقونة الطاقة -->
+    <div class="power-icon">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+          </li>
+    </div>
+    <!-- الناف بار -->
+    <div class="navbar" style="font-weight:bold ;">
+        <div class="site-name" id="siteName">AMOON</div>
+        <div>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'product_list' %}">Product</a>
+            <a href="{% url 'subcategory_list' %}">Sub Category</a>
+           
+            <!-- أضف روابط أخرى حسب الحاجة -->
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">لوحة التحكم</h1>
+        <div class="container mb-4">
+            <div class="row g-3 text-center align-items-center">
+              <!-- بطاقة نسبة الوحدات المتاحة -->
+              <div class="container mb-4">
+                <div class="row text-center g-3">
+                  <!-- بطاقة: نسبة الوحدات المتاحة -->
+                  <div class="col-6 col-md-2 mb-4">
+                    <div class="card stat-card">
+                      <div class="card-body py-4">
+                        <i class="bi bi-check-circle" style="font-size: 36px; color: #ffc107;"></i>
+                        <h5 class="card-title mt-2" style="font-size: 16px;">نسبة الوحدات المتاحة</h5>
+                        <p class="card-text" style="font-size: 20px; font-weight: bold;">{{ available_percentage }}%</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- بطاقة: عدد الفئات الرئيسية -->
+                  <div class="col-6 col-md-2 mb-4">
+                    <div class="card stat-card">
+                      <div class="card-body py-4">
+                        <i class="bi bi-folder" style="font-size: 36px; color: #17a2b8;"></i>
+                        <h5 class="card-title mt-2" style="font-size: 16px;">عدد الفئات الرئيسية</h5>
+                        <p class="card-text" style="font-size: 20px; font-weight: bold;">{{ total_categories }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- بطاقة: عدد الفئات الفرعية -->
+                  <div class="col-6 col-md-2 mb-4">
+                    <div class="card stat-card">
+                      <div class="card-body py-4">
+                        <i class="bi bi-layers" style="font-size: 36px; color: #28a745;"></i>
+                        <h5 class="card-title mt-2" style="font-size: 16px;">عدد الفئات الفرعية</h5>
+                        <p class="card-text" style="font-size: 20px; font-weight: bold;">{{ total_subcategories }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- بطاقة: عدد المنتجات -->
+                  <div class="col-6 col-md-2 mb-4">
+                    <div class="card stat-card">
+                      <div class="card-body py-4">
+                        <i class="bi bi-box-seam" style="font-size: 36px; color: #007bff;"></i>
+                        <h5 class="card-title mt-2" style="font-size: 16px;">عدد المنتجات</h5>
+                        <p class="card-text" style="font-size: 20px; font-weight: bold;">{{ total_products }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- بطاقة: إجمالي المخزون -->
+                  <div class="col-6 col-md-2 mb-4">
+                    <div class="card stat-card">
+                      <div class="card-body py-4">
+                        <i class="bi bi-archive" style="font-size: 36px; color: #6c757d;"></i>
+                        <h5 class="card-title mt-2" style="font-size: 16px;">إجمالي المخزون</h5>
+                        <p class="card-text" style="font-size: 20px; font-weight: bold;">{{ total_stock }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+        <!-- قسم الرسوم البيانية -->
+        <div class="col-md-6 mb-4">
+            <div class="card card-custom mx-auto" style="max-width:600px; height:280px;">
+              <div class="card-header text-center">
+                عدد المنتجات في كل فئة
+              </div>
+              <div class="card-body p-2">
+                <canvas id="productChart" style="width: 100%; height: 200px;"></canvas>
+              </div>
+            </div>
+          </div>
+          
+          <!-- البطاقة الثانية: إجمالي المخزون -->
+          <div class="col-md-6 mb-4">
+            <div class="card card-custom mx-auto" style="max-width:600px; height:280px;">
+              <div class="card-header text-center">
+                إجمالي المخزون
+              </div>
+              <div class="card-body p-2">
+                <canvas id="stockChart" style="width: 100%; height: 200px;"></canvas>
+              </div>
+            </div>
+          </div>
+          
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // البيانات القادمة من الـ View
+            var categoryNames = {{ category_names|safe }};
+            var productCounts = {{ product_counts|safe }};
+            var stockCounts = {{ stock_counts|safe }};
+        
+            // إعدادات الرسم البياني العمودي (Bar Chart) مع تحسين شكل الأعمدة والمحاور
+            var productChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        bodyFont: { size: 14 },
+                        titleFont: { size: 16 }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        grid: { display: false },
+                        ticks: { font: { size: 12, family: 'Arial' } }
+                    },
+                    y: {
+                        display: true,
+                        beginAtZero: true,
+                        grid: { display: true, color: 'rgba(0,0,0,0.1)' },
+                        ticks: { font: { size: 12, family: 'Arial' } }
+                    }
+                }
+            };
+        
+            // رسم بياني: عدد المنتجات في كل فئة (Bar Chart)
+            var colorPalette = [
+    'rgba(0, 51, 102, 0.9)',  // أزرق غامق جدًا
+    'rgba(0, 76, 153, 0.85)', // أزرق داكن
+    'rgba(0, 102, 204, 0.8)', // أزرق متوسط
+    'rgba(25, 25, 112, 0.75)', // أزرق أقرب للأسود (Midnight Blue)
+    'rgba(16, 16, 70, 0.7)',   // أزرق مائل للأسود أكثر
+    'rgba(10, 10, 50, 0.65)'   // أقرب للأسود المزرق
+];
+
+// إنشاء مصفوفة ألوان تناسب عدد البيانات باستخدام `slice`
+var backgroundColors = colorPalette.slice(0, stockCounts.length);
+var borderColors = backgroundColors.map(color => color.replace(/0\.\d+\)/, '1)'));
+            var ctxProduct = document.getElementById('productChart').getContext('2d');
+            var productChart = new Chart(ctxProduct, {
+                type: 'bar',
+                data: {
+                    labels: categoryNames,
+                    datasets: [{
+                        label: 'عدد المنتجات',
+                        data: productCounts,
+                        backgroundColor: backgroundColors, // لون النظام الموحد
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 0,
+                        borderRadius: 10,         // حواف دائرية للأعمدة
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.8
+                    }]
+                },
+                options: productChartOptions
+            });
+        
+            // إعدادات الرسم البياني الدائري (Pie Chart)
+            var stockChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 12, family: 'Arial' }
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: { size: 14 },
+                        titleFont: { size: 16 }
+                    }
+                }
+            };
+        
+            // رسم بياني: إجمالي المخزون في كل فئة (Pie Chart) باستخدام لون موحد
+            var ctxStock = document.getElementById('stockChart').getContext('2d');
+            var stockChart = new Chart(ctxStock, {
+                type: 'pie',
+                data: {
+                    labels: categoryNames,
+                    datasets: [{
+                        label: 'إجمالي المخزون',
+                        data: stockCounts,
+                        backgroundColor: backgroundColors,
+                        borderColor: Array(stockCounts.length).fill('rgba(54, 162, 235, 1)'),
+                        borderWidth: 0
+                    }]
+                },
+                options: stockChartOptions
+            });
+        });
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

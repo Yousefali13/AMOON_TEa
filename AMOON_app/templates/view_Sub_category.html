@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>عرض الفئات الفرعية</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">الفئات الفرعية</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>الفئة الرئيسية</th>
+                <th>اسم الفئة الفرعية</th>
+                <th>الوصف</th>
+                <th>إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subcategory in subcategories %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ subcategory.category.name }}</td>
+                <td>{{ subcategory.name }}</td>
+                <td>{{ subcategory.description }}</td>
+                <td>
+                    <!-- زر التعديل: يفتح النافذة المنبثقة للتعديل -->
+                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ subcategory.id }}">
+                        تعديل
+                    </button>
+                    <!-- زر الحذف: يمكن أن يكون نافذة منبثقة تأكيد الحذف أيضًا -->
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ subcategory.id }}">
+                        حذف
+                    </button>
+                </td>
+            </tr>
+
+            <!-- مودال التعديل -->
+            <div class="modal fade" id="editModal{{ subcategory.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ subcategory.id }}" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form method="post" action="{% url 'subcategory_edit' subcategory.id %}">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="editModalLabel{{ subcategory.id }}">تعديل الفئة الفرعية</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                    </div>
+                    <div class="modal-body">
+                      <!-- هنا يتم وضع حقول التعديل -->
+                      <div class="mb-3">
+                          <label for="category{{ subcategory.id }}" class="form-label">الفئة الرئيسية</label>
+                          <select class="form-control" id="category{{ subcategory.id }}" name="category">
+                              {% for cat in categories %}
+                                  <option value="{{ cat.id }}" {% if cat.id == subcategory.category.id %}selected{% endif %}>
+                                      {{ cat.name }}
+                                  </option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                      <div class="mb-3">
+                          <label for="name{{ subcategory.id }}" class="form-label">اسم الفئة الفرعية</label>
+                          <input type="text" class="form-control" id="name{{ subcategory.id }}" name="name" value="{{ subcategory.name }}">
+                      </div>
+                      <div class="mb-3">
+                          <label for="description{{ subcategory.id }}" class="form-label">الوصف</label>
+                          <textarea class="form-control" id="description{{ subcategory.id }}" name="description" rows="3">{{ subcategory.description }}</textarea>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                      <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- مودال الحذف (اختياري) -->
+            <div class="modal fade" id="deleteModal{{ subcategory.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ subcategory.id }}" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form method="post" action="{% url 'subcategory_delete' subcategory.id %}">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel{{ subcategory.id }}">حذف الفئة الفرعية</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                    </div>
+                    <div class="modal-body">
+                      هل أنت متأكد من حذف الفئة الفرعية: <strong>{{ subcategory.name }}</strong>؟
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                      <button type="submit" class="btn btn-danger">حذف</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- زر لإضافة فئة فرعية جديدة -->
+    <a href="{% url 'Sub_Category' %}" class="btn btn-primary mt-3">
+        <i class="bi bi-plus"></i> إضافة فئة فرعية جديدة
+    </a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

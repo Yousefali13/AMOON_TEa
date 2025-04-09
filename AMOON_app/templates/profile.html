@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>البروفايل الشخصي</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header text-center">
+                {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}" class="img-thumbnail" width="150">
+                {% else %}
+                    <img src="{% static 'images/default_user.png' %}" class="img-thumbnail" width="150">
+                {% endif %}
+                <h2>{{ user.get_full_name }}</h2>
+                <p>{{ user.job_title }} - {{ user.department }}</p>
+            </div>
+            <div class="card-body">
+                <h4>🔹 الأنشطة المهنية</h4>
+                <ul class="list-group">
+                    {% for activity in activities %}
+                        <li class="list-group-item">
+                            <strong>{{ activity.activity_name }}</strong>
+                            <p>{{ activity.description }}</p>
+                            <small>من: {{ activity.start_date }} إلى: {{ activity.end_date|default:"حتى الآن" }}</small>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">لا يوجد أنشطة مسجلة.</li>
+                    {% endfor %}
+                </ul>
+                
+       
+                    <div class="mt-4">
+                  
+    {% if user.is_authenticated %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'cv_dashboard' %}">سيرتي الذاتية</a>
+    </li>
+    {% endif %}
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

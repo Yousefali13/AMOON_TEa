@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <title>Team Section</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --white: #fff;
+      --black: #000;
+      --lightBlue: #17a;
+      --background-light: #f5f8fa;
+      --background-dark: #0707077c;
+      --text-light: #000;
+      --text-dark: #f0f0f0;
+      --link-color: blue;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-light);
+      color: var(--text-light);
+      transition: background-color 0.3s, color 0.3s;
+      direction: rtl;
+    }
+
+    .navbar {
+      width: 90%;
+      background-color: black;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+    }
+
+    .navbar .site-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: orange;
+      margin-left: 20px;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      color: rgb(85, 85, 85);
+    }
+
+    .logo {
+      position: fixed;
+      top: 1px;
+      left: 2px;
+      width: 60px;
+      height: 60px;
+    }
+
+    .logo img {
+      width: 80%;
+      height: auto;
+    }
+
+    .wrapper {
+      background: var(--white);
+      width: 90%;
+      max-width: 1400px;
+      margin: 100px auto 20px; /* ترك مسافة من الأعلى للنافذة */
+      padding: 20px;
+    }
+
+            .title h4 {
+        font-size: 2rem;
+        text-align: center;
+        margin: 60px 0 20px;
+        letter-spacing: 2px;
+        font-weight: bold;
+        animation: colorchange 3s infinite;
+        }
+
+        /* تعريف keyframes لتغيير اللون */
+        @keyframes colorchange {
+        0%   { color: #e74c3c; }   /* أحمر */
+        25%  { color: #f1c40f; }   /* أصفر */
+        50%  { color: #2ecc71; }   /* أخضر */
+        75%  { color: #3498db; }   /* أزرق */
+        100% { color: #e74c3c; }   /* يعود للأحمر */
+        }
+    .card_Container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      width: 250px;
+      text-align: center;
+      position: relative; /* لإمكانية وضع overlay */
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .imbBx {
+      position: relative;
+      width: 100%;
+      height: 250px;
+    }
+
+    .imbBx img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 10px;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      height: 50%;
+    }
+
+    .imbBx:hover .overlay {
+      opacity: 1;
+    }
+
+    .overlay h3 {
+      font-size: 18px;
+      margin: 5px 0;
+    }
+
+    .overlay h3 span {
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    .sci {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .sci li a {
+      color: var(--white);
+      font-size: 18px;
+    }
+
+    footer {
+      margin-top: 20px;
+      padding: 20px;
+      text-align: center;
+      background-color: var(--background-light);
+      width: 100%;
+      transition: background-color 0.3s, color 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+    
+  {% load static %}
+  <div class="logo">
+    <img src="{% static 'images/logo.png' %}" alt="logo">
+  </div>
+  <div class="navbar">
+    <div class="site-name" id="siteName" style="cursor: pointer;">AMOON</div>
+    <div>
+      <a href="{% url 'about' %}">About</a>
+      <a href="{% url 'hello' %}">HOME</a>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <div class="card_Container">
+        <div class="title" style="margin-top: 50px;">
+            <h4>Y-A-S-F-R-M-N Team</h4>
+        </div>
+        
+      <!-- بطاقة فريق - Yousef -->
+      <div class="card">
+        <div class="imbBx">
+          <img src="{% static 'images/Yousef.jpg' %}" alt="Yousef">
+          <div class="overlay">
+            <h3>Yousef Ali<br><span>Full-Stack Developer</span></h3>
+            <ul class="sci">
+              <li><a href="mailto:620220263@fa-hists.edu.eg" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+              <li><a href="https://github.com/Yousefali13" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+              <li><a href="https://www.linkedin.com/in/yousef-ali-abdelkader-20ab082b7" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="imbBx">
+          <img src="{% static 'images/mariz1.jpg' %}" alt="Radwa">
+          <div class="overlay">
+            <h3>Mariz Hani<br><span>System Designer</span></h3>
+            <ul class="sci">
+              <li><a href="mailto:radwamohammad49@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+              <li><a href="https://github.com/Radwa110" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+              <li><a href="https://www.linkedin.com/in/radwa-muhammed-a02700202" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="imbBx">
+          <img src="{% static 'images/Rawan.jpg' %}" alt="Abdelrahman">
+          <div class="overlay">
+            <h3>Rawan Adel<br><span>Testing</span></h3>
+            <ul class="sci">
+              <li><a href="mailto:abdelrahmanreda4705@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+              <li><a href="https://github.com/AbdelrahmanReda47" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+              <li><a href="https://www.linkedin.com/in/abdelrahman-reda-109b39295" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- بطاقة فريق - Abdelrahman -->
+      <div class="card">
+        <div class="imbBx">
+          <img src="{% static 'images/Nansi.jpg' %}" alt="Abdelrahman">
+          <div class="overlay">
+            <h3>Nansi Sayd<br><span>System Analysis</span></h3>
+            <ul class="sci">
+              <li><a href="mailto:abdelrahmanreda4705@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+              <li><a href="https://github.com/AbdelrahmanReda47" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+              <li><a href="https://www.linkedin.com/in/abdelrahman-reda-109b39295" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- بطاقة فريق - Mahmoud -->
+      <div class="card">
+        <div class="imbBx">
+          <img src="{% static 'images/Rafeet.jpg' %}" alt="Mahmoud">
+          <div class="overlay">
+            <h3>Refaat Abuelsoud<br><span>Fornt-end Developer</span></h3>
+            <ul class="sci">
+              <li><a href="mailto:Mahmoudabdelkareem.info@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+              <li><a href="https://github.com/Ma7moud-Mansour" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+              <li><a href="https://www.linkedin.com/in/ma7moud-abdelkareem" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- بطاقة فريق - Radwa -->
+      <div class="card">
+        <div class="imbBx">
+          <img src="{% static 'images/shahd.jpg' %}" alt="Mahmoud">
+          <div class="overlay">
+            <h3>Shahd Ashour<br><span>System Designer</span></h3>
+            <ul class="sci">
+              <li><a href="mailto:Mahmoudabdelkareem.info@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+              <li><a href="https://github.com/Ma7moud-Mansour" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+              <li><a href="https://www.linkedin.com/in/ma7moud-abdelkareem" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+            </ul>
+          </div>
+        </div>
+     </div>
+        <div class="card">
+            <div class="imbBx">
+              <img src="{% static 'images/Abdelrhman.jpg' %}" alt="Abdelrahman">
+              <div class="overlay">
+                <h3>Abdelrhman Mohamed<br><span>Fornt-end Developer</span></h3>
+                <ul class="sci">
+                  <li><a href="mailto:abdelrahmanreda4705@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+                  <li><a href="https://github.com/AbdelrahmanReda47" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+                  <li><a href="https://www.linkedin.com/in/abdelrahman-reda-109b39295" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="imbBx">
+              <img src="{% static 'images/Amira.jpg' %}" alt="Abdelrahman">
+              <div class="overlay">
+                <h3>Fawzya Mohamed<br><span>Testing</span></h3>
+                <ul class="sci">
+                  <li><a href="mailto:abdelrahmanreda4705@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+                  <li><a href="https://github.com/AbdelrahmanReda47" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+                  <li><a href="https://www.linkedin.com/in/abdelrahman-reda-109b39295" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="imbBx">
+              <img src="{% static 'images/Alaa1.jpg' %}" alt="Abdelrahman">
+              <div class="overlay">
+                <h3>Alaa Abdellatef<br><span>Front-end Developer</span></h3>
+                <ul class="sci">
+                  <li><a href="mailto:abdelrahmanreda4705@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+                  <li><a href="https://github.com/AbdelrahmanReda47" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+                  <li><a href="https://www.linkedin.com/in/abdelrahman-reda-109b39295" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="imbBx">
+              <img src="{% static 'images/mariem.jpg' %}" alt="Abdelrahman">
+              <div class="overlay">
+                <h3>Mariam Ehab<br><span>System Designer </span></h3>
+                <ul class="sci">
+                  <li><a href="mailto:abdelrahmanreda4705@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+                  <li><a href="https://github.com/AbdelrahmanReda47" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+                  <li><a href="https://www.linkedin.com/in/abdelrahman-reda-109b39295" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+ 
+          <div class="card">
+            <div class="imbBx">
+              <img src="{% static 'images/Salama.jpg' %}" alt="Abdelrahman">
+              <div class="overlay">
+                <h3>~Salma Faisal<br><span>System Analysis </span></h3>
+                <ul class="sci">
+                  <li><a href="mailto:abdelrahmanreda4705@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a></li>
+                  <li><a href="https://github.com/AbdelrahmanReda47" target="_blank"><i class="fa-brands fa-github"></i></a></li>
+                  <li><a href="https://www.linkedin.com/in/abdelrahman-reda-109b39295" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div>
+  <footer>
+    &copy; 2025 AMOON ERP By FRAYSMAN Team
+  </footer>
+  <script>
+    const toggleButton = document.getElementById('theme-toggle');
+    if(toggleButton){
+      toggleButton.addEventListener('click', () => {
+          document.body.classList.toggle('dark-mode');
+      });
+    }
+    
+  </script>
+  
+</body>
+</html>

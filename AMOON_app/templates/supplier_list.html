@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>قائمة الموردين</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      direction: rtl;
+      text-align: right;
+      padding-top: 20px;
+    }
+    .container {
+      margin-top: 2rem;
+    }
+    h2 {
+      font-weight: 600;
+    }
+    .table thead th {
+      background-color: #343a40;
+      color: #fff;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+    /* Custom CSS لتعديل الجدول */
+    .table-bordered th,
+    .table-bordered td {
+      border: 1px solid #dee2e6;
+    }
+  </style>
+</head>
+<body>
+    <div class="text-center mt-4">
+   
+      </div>
+  <div class="container my-5">
+    <h2 class="text-center mb-4">قائمة الموردين</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">اسم الشركة</th>
+            <th scope="col">جهة الاتصال</th>
+            <th scope="col">البريد الإلكتروني</th>
+            <th scope="col">الهاتف</th>
+            <th scope="col">العنوان</th>
+            <th scope="col">المنتاجات لدي المورد 
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for supplier in suppliers %}
+          <tr>
+            <th scope="row">{{ supplier.id }}</th>
+            <td>{{ supplier.company_name }}</td>
+            <td>{{ supplier.contact_person }}</td>
+            <td>{{ supplier.email }}</td>
+            <td>{{ supplier.phone }}</td>
+            <td>{{ supplier.address }}</td>
+           
+              <td>
+                <a href="{% url 'supplier_categories_view' supplier.id %}">
+                  عرض الفئات
+                </a>
+              </td>
+          
+          </tr>
+        
+          <!-- AMOON_app/templates/supplier_list.html -->
+
+
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="text-center mt-3">
+      <a href="{% url 'add_supplier' %}" class="btn btn-primary">
+        <i class="bi bi-plus"></i> إضافة مورد جديد
+      </a>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle (يشمل Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

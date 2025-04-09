@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة المحاسبة</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>لوحة المحاسبة</h1>
+    <a href="{% url 'add_journal_entry' %}" class="btn btn-primary mb-3">أضف قيد يومي</a>
+    
+    <h2>الحسابات</h2>
+    <ul class="list-group mb-4">
+      {% for account in accounts %}
+        <li class="list-group-item">
+          {{ account.code }} - {{ account.name }} ({{ account.get_type_display }})
+        </li>
+      {% empty %}
+        <li class="list-group-item">لا توجد حسابات.</li>
+      {% endfor %}
+    </ul>
+    
+    <h2>القيود اليومية</h2>
+    <ul class="list-group">
+      {% for entry in journal_entries %}
+        <li class="list-group-item">
+          <strong>{{ entry.date }}</strong> - {{ entry.description }}
+          <ul>
+            {% for line in entry.lines.all %}
+              <li>
+                {{ line.account.name }}: مدين {{ line.debit }}, دائن {{ line.credit }}
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% empty %}
+        <li class="list-group-item">لا توجد قيود يومية.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</body>
+</html>

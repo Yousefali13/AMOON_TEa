@@ -1,0 +1,21 @@
+{% load static %}
+{% block content %}
+<div class="container my-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">طلب شراء للمنتج: {{ product.name }}</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>سعر البيع:</strong> {{ product.selling_price }}</p>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="quantity" class="form-label">الكمية المطلوبة:</label>
+          <input type="number" name="quantity" id="quantity" class="form-control" min="1" required>
+        </div>
+        <button type="submit" class="btn btn-primary">إرسال الطلب</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إنشاء قيد جديد</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      direction: rtl;
+      background-color: #f8f9fa;
+      font-family: 'Cairo', sans-serif;
+    }
+    .container {
+      margin-top: 50px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+    }
+    th, td {
+      text-align: center;
+      vertical-align: middle;
+    }
+    .form-control {
+      text-align: right;
+    }
+    .add-line, .del-line {
+      cursor: pointer;
+      color: blue;
+    }
+    .del-line:hover {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mb-4">إنشاء قيد جديد</h1>
+    <!-- عرض رسائل التنبيه إن وجدت -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-info">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <!-- حقول القيد الرئيسي -->
+      <div class="card mb-3">
+        <div class="card-header">بيانات القيد</div>
+        <div class="card-body">
+          {{ form.non_field_errors }}
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="id_reference">المرجع</label>
+              {{ form.reference }}
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="id_accounting_date">التاريخ</label>
+              {{ form.accounting_date }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="id_journal">اليومية</label>
+              {{ form.journal }}
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="id_state">الحالة</label>
+              {{ form.state }}
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="id_comment">التعليق</label>
+            {{ form.comment }}
+          </div>
+        </div>
+      </div>
+
+      <!-- أسطر القيد باستخدام Formset -->
+      <div class="card mb-3">
+        <div class="card-header">الأسطر (Journal Items)</div>
+        <div class="card-body">
+          {{ formset.management_form }}
+          <table class="table table-bordered">
+            <thead class="thead-light">
+              <tr>
+                <th>الحساب</th>
+                <th>الشريك</th>
+                <th>الوصف (Label)</th>
+                <th>مدين</th>
+                <th>دائن</th>
+                <th>Tax Grids</th>
+                <th>حذف</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for form in formset.forms %}
+                <tr>
+                  <td>{{ form.account }}</td>
+                  <td>{{ form.partner }}</td>
+                  <td>{{ form.label }}</td>
+                  <td>{{ form.debit }}</td>
+                  <td>{{ form.credit }}</td>
+                  <td>{{ form.tax_grids }}</td>
+                  <td>
+                    <!-- حقل الحذف من formset -->
+                    {% if formset.can_delete %}
+                      {{ form.DELETE }}
+                      <span class="del-line" onclick="toggleDelete('{{ forloop.counter0 }}')">🗑</span>
+                      {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <!-- زر لإضافة سطر جديد (عبر جافاسكربت أو إعادة ضبط extra) -->
+          <button type="button" class="btn btn-primary" id="add-line">أضف سطرًا جديدًا</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-success">حفظ</button>
+      <a href="#" class="btn btn-secondary">إلغاء</a>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    // مثال مبسط لإضافة سطر جديد عبر نسخ آخر سطر (يحتاج تخصيص)
+    // يمكنك استخدام حلول أكثر مرونة مثل django formset dynamic
+    let formIndex = '{{ formset.total_form_count|default:"0" }}';
+    $('#add-line').click(function() {
+      // ننسخ آخر سطر
+      let newForm = $('tbody tr:last').clone(true);
+      // تحديث الفهارس في الحقول
+      newForm.html(newForm.html().replace(/form\-\d+/g, 'form-' + formIndex));
+      $('tbody').append(newForm);
+      formIndex++;
+      // تحديث إجمالي النماذج في management_form
+      $('#id_form-TOTAL_FORMS').val(formIndex);
+    });
+
+    // تفعيل زر الحذف
+    function toggleDelete(index) {
+      let checkbox = document.getElementById(`id_form-${index}-DELETE`);
+      checkbox.checked = !checkbox.checked;
+    }
+  </script>
+</body>
+</html>

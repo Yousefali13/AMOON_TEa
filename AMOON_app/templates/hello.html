@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOON ERP</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            gap: 50px;
+        }
+        .text-container {
+            max-width: 400px;
+        }
+        h1 {
+            font-size: 50px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .imi {
+            width: 700px;
+            right: 10px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            width: 150px;
+            padding: 10px 0;
+            margin: 10px 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            background-color: black;
+            border: 2px solid black;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            
+        }
+        .btn:hover {
+            background-color: white;
+            color: black;
+        }
+        .power-icon {
+                width: 45px;
+                height: 45px;
+                position: fixed;
+                top: 7px;
+                right: 0px;
+                }
+                .navbar {
+    width: 90%;
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    
+}
+        .navbar .site-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: orange;
+            margin-left: 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-size:20px ;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            color: rgb(85, 85, 85);
+   
+        }
+        .logo {
+    position: fixed;
+    top: 1px;  
+    left: 2px; 
+    width: 60px; 
+    height: 60px;
+}
+
+.logo img {
+    width: 80%; /* جعل الصورة تأخذ كل عرض الحاوية */
+    height: auto; /* الحفاظ على الأبعاد */
+}
+    </style>
+</head>
+<body>
+    {% load static %}
+    <div class="logo">
+        <img src="{% static 'images/logo.png' %}" alt="logo" width="30" height="30"> 
+    </div>
+    <div class="power-icon">
+    <img src="{% static 'images/power_icon.png' %}" alt="Power Icon" width="30" height="30">
+    </div>
+    <div class="navbar">
+
+        <div class="site-name" id="siteName" style="cursor: pointer; margin-left: 0 ;font-size:20px;padding: 0;">AMOON</div>   
+        <div>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'register_user' %}">Sign-up</a>
+         
+            
+    </div>
+    </div>
+<div class="wrapper">
+        {% load static %}
+        <img src="{% static 'images/logo.png' %}" class="imi" alt="AMOON ERP Logo">
+        <div class="text-container">
+            <h1>Hello...</h1>
+            <h2>Welcome to AMOON ERP</h2>
+            <div class="button-container">
+                <a href="{% url 'home_user' %}" class="btn">Employee</a>
+                <a href="{% url 'home_company' %}" class="btn">Company</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- <div>
+        about ma  I'm yousef ali i'm devloper using Django Framwork 
+
+
+
+
+
+
+
+
+
+
+    </div> -->
+</body>
+</html>

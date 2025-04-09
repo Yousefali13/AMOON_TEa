@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إضافة قيد يومي</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      direction: rtl;
+      background-color: #f8f9fa;
+      font-family: 'Cairo', sans-serif;
+    }
+    .container {
+      margin-top: 50px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>إضافة قيد يومي</h1>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="date">التاريخ:</label>
+        <input type="date" name="date" class="form-control" id="date" required>
+      </div>
+      <div class="form-group">
+        <label for="description">الوصف:</label>
+        <input type="text" name="description" class="form-control" id="description" required>
+      </div>
+      <div class="form-group">
+        <label for="comment">التعليق:</label>
+        <textarea name="comment" class="form-control" id="comment" rows="3" placeholder="اكتب التعليق هنا..."></textarea>
+      </div>
+      <hr>
+      <h3>بيانات القيد</h3>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>نوع العملية</th>
+            <th>الحساب</th>
+            <th>القيمة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>مدين</td>
+            <td>
+              <select name="debit_account" class="form-control" required>
+                <option value="">-- اختر الحساب المدين --</option>
+                {% for account in accounts %}
+                  <option value="{{ account.id }}">{{ account.code }} - {{ account.name }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td>
+              <input type="number" step="0.01" name="debit_amount" class="form-control" required>
+            </td>
+          </tr>
+          <tr>
+            <td>دائن</td>
+            <td>
+              <select name="credit_account" class="form-control" required>
+                <option value="">-- اختر الحساب الدائن --</option>
+                {% for account in accounts %}
+                  <option value="{{ account.id }}">{{ account.code }} - {{ account.name }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td>
+              <input type="number" step="0.01" name="credit_amount" class="form-control" required>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-success">حفظ</button>
+      <a href="{% url 'accounting_dashboard' %}" class="btn btn-secondary">إلغاء</a>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم الشركة</title>
+  <!-- ربط Bootstrap و Font Awesome -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <style>
+    /* تعريف المتغيرات العامة للثيم */
+    :root {
+      --primary-color: #007bff;
+      --secondary-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --bg-color: #f8f9fa;
+      --card-bg: #fff;
+      --text-color: #333;
+      --border-radius: 10px;
+      --box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    /* الأساسيات العامة */
+    body {
+      background-color: var(--bg-color);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text-color);
+      direction: rtl;
+      margin: 0;
+      padding: 0;
+    }
+    /* الحاوية الرئيسية */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+    /* عنوان لوحة التحكم */
+    h1, h2 {
+      color: var(--text-color);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    /* بطاقة كود الشركة */
+    .company-code-card {
+      background-color: var(--card-bg);
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      padding: 10px 20px;
+      width: fit-content;
+      margin: 0 auto 30px;
+      box-shadow: var(--box-shadow);
+    }
+    .company-code-card span {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    /* شبكة بطاقات الإحصائيات */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+    .stat-card h3 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--text-color);
+    }
+    .stat-card p {
+      font-size: 24px;
+      margin: 10px 0 0;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+    /* تنسيق الجداول */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+    }
+    .table th,
+    .table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+    .table th {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+    .table tr:nth-child(even) {
+      background-color: #f1f1f1;
+    }
+    .table tr:hover {
+      background-color: #e9e9e9;
+    }
+    /* تنسيق الأزرار */
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-success {
+      background-color: var(--secondary-color);
+      color: #fff;
+    }
+    .btn-success:hover {
+      background-color: #218838;
+    }
+    .btn-warning {
+      background-color: var(--warning-color);
+      color: #333;
+    }
+    .btn-warning:hover {
+      background-color: #e0a800;
+    }
+    .btn-danger {
+      background-color: var(--danger-color);
+      color: #fff;
+    }
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background-color: #0069d9;
+    }
+    .btn-info {
+      background-color: #17a2b8;
+      color: #fff;
+    }
+    .btn-info:hover {
+      background-color: #138496;
+    }
+    /* تبويبات الصفحة */
+    .nav-tabs {
+      display: flex;
+      border-bottom: 2px solid #ddd;
+      margin-bottom: 20px;
+    }
+    .nav-tabs .nav-link {
+      flex: 1;
+      padding: 12px 0;
+      text-align: center;
+      font-weight: bold;
+      color: var(--text-color);
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .nav-tabs .nav-link.active {
+      border-bottom: 4px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    /* تنسيق خانة البحث */
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .search-container input {
+      width: 300px;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: var(--border-radius);
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .search-container input:focus {
+      border-color: var(--primary-color);
+    }
+    /* تنسيق النوافذ المنبثقة (المودال) */
+    .modal-content {
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+    .modal-header {
+      background-color: var(--primary-color);
+      color: #fff;
+      border-bottom: none;
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
+      padding: 15px 20px;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .modal-body {
+      padding: 20px;
+    }
+    .modal-footer {
+      border-top: 1px solid #ddd;
+      padding: 10px 20px;
+      text-align: left;
+    }
+    /* تنسيق النماذج */
+    .form-group label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 5px rgba(0,123,255,0.5);
+    }
+    [dir="rtl"] .form-control {
+      text-align: right;
+      padding-inline: 10px;
+    }
+    /* زر إضافة موظف/إدارة/تنزيل تقرير */
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- عنوان لوحة التحكم -->
+    <h1>لوحة تحكم الشركة: {{ company.name }}</h1>
+    <!-- بطاقة كود الشركة -->
+    <div class="company-code-card">
+      <span>كود الشركة: {{ company.code }}</span>
+    </div>
+    <!-- بطاقات الإحصائيات -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <h3>عدد الموظفين الحاليين</h3>
+        <p>{{ company.employee_count }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>الحد الأدنى لعدد الموظفين</h3>
+        <p>{{ company.min_employee_count }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>الحد الأقصى لعدد الموظفين</h3>
+        <p>{{ company.max_employee_count }}</p>
+      </div>
+    </div>
+    <!-- شريط الوظائف الإضافية -->
+    <div class="action-buttons">
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addEmployeeModal">
+        <i class="fas fa-user-plus"></i> إضافة موظف جديد
+      </button>
+      <a href="{% url 'add_department' company.id %}" class="btn btn-success">
+        <i class="fas fa-plus-circle"></i> إضافة إدارة جديدة
+      </a>
+      <button type="button" class="btn btn-primary">
+        <i class="fas fa-download"></i> تنزيل تقرير الشركة
+      </button>
+    </div>
+    <!-- خانة البحث للموظفين -->
+    <div class="search-container mt-4">
+      <input type="text" class="form-control" id="searchInput" placeholder="ابحث عن موظف...">
+    </div>
+    <!-- تبويبات الموظفين -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="employees-tab" data-toggle="tab" href="#employees" role="tab" aria-controls="employees" aria-selected="true">الموظفون</a>
+      </li>
+    </ul>
+    <!-- جدول الموظفين -->
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="employees" role="tabpanel" aria-labelledby="employees-tab">
+        <table class="table" id="employeesTable">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>الوظيفة</th>
+              <th>الإدارة</th>
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for employee in employees %}
+            <tr>
+              <td>{{ employee.first_name }} {{ employee.last_name }}</td>
+              <td>{{ employee.job_title }}</td>
+              <td>{{ employee.department }}</td>
+              <td>
+                <!-- زر تعديل الموظف -->
+                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editEmployeeModal{{ employee.id }}">
+                  <i class="fas fa-edit"></i> تعديل
+                </button>
+                <!-- زر حذف الموظف -->
+                <form method="POST" action="{% url 'remove_employee' company.id employee.id %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('هل أنت متأكد من حذف هذا الموظف؟')">
+                    <i class="fas fa-trash"></i> حذف
+                  </button>
+                </form>
+                <!-- زر عرض أنشطة الموظف -->
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#employeeActivitiesModal{{ employee.id }}">
+                  <i class="fas fa-history"></i> عرض الأنشطة
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- نافذة منبثقة لإضافة موظف جديد -->
+  <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addEmployeeModalLabel">إضافة موظف جديد</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="إغلاق">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'add_employee' company.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="username">اسم المستخدم:</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+              <label for="password">كلمة المرور:</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+              <label for="first_name">الاسم الأول:</label>
+              <input type="text" class="form-control" id="first_name" name="first_name" required>
+            </div>
+            <div class="form-group">
+              <label for="last_name">الاسم الأخير:</label>
+              <input type="text" class="form-control" id="last_name" name="last_name" required>
+            </div>
+            <div class="form-group">
+              <label for="job_title">الوظيفة:</label>
+              <select class="form-control" id="job_title" name="job_title" required>
+                {% for code, title in job_title %}
+                <option value="{{ code }}">{{ title }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="department">الإدارة:</label>
+              <select class="form-control" id="department" name="department" required>
+                {% for department in departments %}
+                <option value="{{ department.id }}">{{ department.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> إضافة
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- نوافذ تعديل الموظف -->
+  {% for employee in employees %}
+  <div class="modal fade" id="editEmployeeModal{{ employee.id }}" tabindex="-1" role="dialog" aria-labelledby="editEmployeeModalLabel{{ employee.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editEmployeeModalLabel{{ employee.id }}">تعديل بيانات الموظف</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="إغلاق">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'edit_employee' company.id employee.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="name{{ employee.id }}">الاسم:</label>
+              <input type="text" class="form-control" id="name{{ employee.id }}" name="name" value="{{ employee.first_name }} {{ employee.last_name }}">
+            </div>
+            <div class="form-group">
+              <label for="department{{ employee.id }}">الإدارة:</label>
+              <select class="form-control" id="department{{ employee.id }}" name="department">
+                {% for department in departments %}
+                <option value="{{ department.id }}" {% if employee.department_id == department.id %}selected{% endif %}>
+                  {{ department.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="job_title{{ employee.id }}">الوظيفة:</label>
+              <select class="form-control" id="job_title{{ employee.id }}" name="job_title">
+                {% for code, title in job_title %}
+                <option value="{{ code }}" {% if employee.job_title == code %}selected{% endif %}>
+                  {{ title }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> حفظ التعديلات
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  
+  <!-- نافذة منبثقة لعرض أنشطة الموظف -->
+  {% for employee in employees %}
+  <div class="modal fade" id="employeeActivitiesModal{{ employee.id }}" tabindex="-1" role="dialog" aria-labelledby="employeeActivitiesModalLabel{{ employee.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="employeeActivitiesModalLabel{{ employee.id }}">
+            أنشطة الموظف - {{ employee.first_name }} {{ employee.last_name }}
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="إغلاق">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>النشاط</th>
+                <th>التفاصيل</th>
+              </tr>
+            </thead>
+            <tbody>{% for activity in employee.activities.all %}
+              <tr>
+                <td>{{ activity.date }}</td>
+                <td>{{ activity.action }}</td>
+                <td>{{ activity.details }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3">لا توجد أنشطة لهذا الموظف</td>
+              </tr>
+            {% endfor %}
+            
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  
+  <!-- تضمين جافا سكريبت وظيفة البحث في جدول الموظفين -->
+  <script>
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+      var searchValue = this.value.toLowerCase();
+      var rows = document.querySelectorAll("#employeesTable tbody tr");
+      rows.forEach(function (row) {
+        var cells = row.getElementsByTagName("td");
+        var match = false;
+        for (var i = 0; i < cells.length; i++) {
+          if (cells[i].textContent.toLowerCase().indexOf(searchValue) > -1) {
+            match = true;
+            break;
+          }
+        }
+        row.style.display = match ? "" : "none";
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تعديل السيرة الذاتية</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {    /* الأنماط الجديدة للخطوات المتدرجة */
+    .step-container {
+      border-left: 3px solid #3498db;
+      margin: 20px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    
+    .step-number {
+      background: #3498db;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: -16px;
+      top: -5px;
+    }
+
+    .skill-form {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .form-divider {
+      border-top: 2px dashed #ddd;
+      margin: 25px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="cv-container">
+      <h1 class="mb-4 text-center text-primary">تعديل السيرة الذاتية</h1>
+      
+      <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <!-- قسم المعلومات الأساسية -->
+        <div class="section card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">المعلومات الأساسية</h2>
+          </div>
+          <div class="card-body">
+            {{ cv_form.as_p }}
+          </div>
+        </div>
+
+        <!-- قسم المهارات مع تنسيق خاص -->
+        <div class="section card mb-4">
+          <div class="card-header bg-success text-white">
+            <h2 class="mb-0">المهارات</h2>
+          </div>
+          <div class="card-body">
+            {{ skill_formset.management_form }}
+            
+            <div id="skills-container">
+              {% for form in skill_formset %}
+                <div class="step-container">
+                  <div class="step-number">{{ forloop.counter }}</div>
+                  <div class="skill-form">
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label class="form-label">اسم المهارة</label>
+                        {{ form.name }}
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">مستوى الإتقان</label>
+                        {{ form.proficiency }}
+                      </div>
+                    </div>
+                    {% if not forloop.first %}
+                      <button type="button" class="btn btn-danger mt-3 remove-skill">
+                        <i class="fas fa-trash"></i> حذف المهارة
+                      </button>
+                    {% endif %}
+                  </div>
+                </div>
+                {% if not forloop.last %}<div class="form-divider"></div>{% endif %}
+              {% endfor %}
+            </div>
+
+            <button type="button" class="btn btn-success mt-3" id="add-skill">
+              <i class="fas fa-plus"></i> إضافة مهارة جديدة
+            </button>
+          </div>
+        </div>
+
+        <!-- باقي الأقسام -->
+        {% for section in form_sections %}
+          <div class="section card mb-4">
+            <div class="card-header bg-info text-white">
+              <h2 class="mb-0">{{ section.title }}</h2>
+            </div>
+            <div class="card-body">
+              {{ section.formset.management_form }}
+              {% for form in section.formset %}
+                <div class="sub-form mb-3 p-3 bg-light rounded">
+                  {{ form.as_p }}
+                </div>
+              {% endfor %}
+              <button type="button" class="btn btn-secondary add-form" data-prefix="{{ section.formset.prefix }}">
+                <i class="fas fa-plus"></i> إضافة {{ section.title }}
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+
+        <div class="text-center mt-5">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fas fa-save"></i> حفظ التغييرات
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener('click', function(e) {
+    // خاصية إضافة المهارات
+    if (e.target.id === 'add-skill') {
+      const totalForms = document.getElementById('id_skill-TOTAL_FORMS');
+      const formNum = parseInt(totalForms.value);
+      const container = document.getElementById('skills-container');
+      
+      // إنشاء العناصر الجديدة
+      const newStep = document.createElement('div');
+      newStep.className = 'step-container';
+      
+      const stepNumber = document.createElement('div');
+      stepNumber.className = 'step-number';
+      stepNumber.textContent = formNum + 1;
+      
+      const skillForm = document.createElement('div');
+      skillForm.className = 'skill-form';
+      skillForm.innerHTML = `
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">اسم المهارة</label>
+            <input type="text" name="skill-${formNum}-name" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">مستوى الإتقان</label>
+            <select name="skill-${formNum}-proficiency" class="form-select">
+              <option value="1">مبتدئ</option>
+              <option value="2">متوسط</option>
+              <option value="3">متقدم</option>
+              <option value="4">خبير</option>
+              <option value="5">خبير جداً</option>
+            </select>
+          </div>
+        </div>
+        <input type="hidden" name="skill-${formNum}-id" id="id_skill-${formNum}-id">
+        <input type="hidden" name="skill-${formNum}-DELETE" id="id_skill-${formNum}-DELETE">
+        <button type="button" class="btn btn-danger mt-3 remove-skill">
+          <i class="fas fa-trash"></i> حذف المهارة
+        </button>
+      `;
+      
+      // إضافة العناصر
+      newStep.appendChild(stepNumber);
+      newStep.appendChild(skillForm);
+      container.appendChild(newStep);
+      
+      // إضافة فواصل
+      const divider = document.createElement('div');
+      divider.className = 'form-divider';
+      container.appendChild(divider);
+      
+      // تحديث العداد
+      totalForms.value = formNum + 1;
+    }
+
+    // خاصية حذف المهارات
+    if (e.target.classList.contains('remove-skill')) {
+      const skillForm = e.target.closest('.step-container');
+      const divider = skillForm.nextElementSibling;
+      
+      if (divider && divider.classList.contains('form-divider')) {
+        divider.remove();
+      }
+      skillForm.remove();
+      
+      // تحديث أرقام الخطوات
+      document.querySelectorAll('.step-number').forEach((num, index) => {
+        num.textContent = index + 1;
+      });
+      
+      // تحديث العداد
+      const totalForms = document.getElementById('id_skill-TOTAL_FORMS');
+      totalForms.value = parseInt(totalForms.value) - 1;
+    }
+
+    // خاصية إضافة النماذج للأقسام الأخرى
+    if (e.target.classList.contains('add-form')) {
+      const prefix = e.target.dataset.prefix;
+      const totalForms = document.getElementById(`id_${prefix}-TOTAL_FORMS`);
+      const formNum = parseInt(totalForms.value);
+      const container = e.target.previousElementSibling;
+      
+      const newForm = document.createElement('div');
+      newForm.className = 'sub-form mb-3 p-3 bg-light rounded';
+      newForm.innerHTML = `
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">${e.target.textContent.trim()}</label>
+            <input type="text" name="${prefix}-${formNum}-name" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">الوصف</label>
+            <textarea name="${prefix}-${formNum}-description" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <input type="hidden" name="${prefix}-${formNum}-id" id="id_${prefix}-${formNum}-id">
+        <input type="hidden" name="${prefix}-${formNum}-DELETE" id="id_${prefix}-${formNum}-DELETE">
+        <button type="button" class="btn btn-danger mt-3 remove-form">
+          <i class="fas fa-trash"></i> حذف
+        </button>
+      `;
+      
+      container.appendChild(newForm);
+      totalForms.value = formNum + 1;
+    }
+
+    // خاصية حذف النماذج للأقسام الأخرى
+    if (e.target.classList.contains('remove-form')) {
+      const form = e.target.closest('.sub-form');
+      const prefix = form.querySelector('input[name$="-name"]').name.split('-')[0];
+      const totalForms = document.getElementById(`id_${prefix}-TOTAL_FORMS`);
+      
+      form.remove();
+      totalForms.value = parseInt(totalForms.value) - 1;
+    }
+  });
+  </script>
+</body>
+</html>

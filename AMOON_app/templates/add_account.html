@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إضافة حساب</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      direction: rtl;
+      background-color: #f8f9fa;
+      font-family: 'Cairo', sans-serif;
+    }
+    .container {
+      margin-top: 50px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+    }
+    th, td {
+      text-align: center;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mb-4">إضافة حساب</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-success">أضف الحساب</button>
+    </form>
+    <hr>
+    <h2>قائمة الحسابات</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>الكود</th>
+          <th>اسم الحساب</th>
+          <th>النوع</th>
+          <th>تصنيف الحساب</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for account in accounts %}
+          <tr>
+            <td>{{ account.code }}</td>
+            <td>{{ account.name }}</td>
+            <td>{{ account.get_type_display }}</td>
+            <td>{{ account.classification }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4">لا توجد حسابات مضافة حتى الآن.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

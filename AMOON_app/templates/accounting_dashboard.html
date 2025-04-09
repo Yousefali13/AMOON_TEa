@@ -1,0 +1,86 @@
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- عنوان الصفحة وزر إضافة جديد -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="m-0 text-dark"><i class="fas fa-book"></i> قيود اليومية</h1>
+        <a href="{% url 'journal_entry_create' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> جديد
+        </a>
+    </div>
+
+    <!-- إذا لم توجد قيود -->
+    {% if not journal_entries %}
+    <div class="text-center mt-5 empty-state">
+        <img src="{% static 'images/empty_journal.png' %}" alt="No Entries" width="150" class="mb-3">
+        <h3 class="text-muted">لا توجد قيود يومية بعد</h3>
+        <p class="text-muted">ابدأ بإضافة أول قيد يومية لك الآن!</p>
+        <a href="{% url 'journal_entry_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> إنشاء قيد يومية
+        </a>
+    </div>
+    {% else %}
+    <!-- عرض جدول القيود إذا وجدت -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <i class="fas fa-list"></i> قائمة القيود
+        </div>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover table-bordered text-nowrap">
+                <thead class="table-light">
+                    <tr>
+                        <th>المرجع</th>
+                        <th>التاريخ</th>
+                        <th>الدورية</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in journal_entries %}
+                    <tr>
+                        <td>{{ entry.reference }}</td>
+                        <td>{{ entry.accounting_date|date:"Y-m-d" }}</td>
+                        <td>{{ entry.journal.name }}</td>
+                        <td>
+                            {% if entry.state == "draft" %}
+                                <span class="badge bg-warning">مسودة</span>
+                            {% elif entry.state == "posted" %}
+                                <span class="badge bg-success">مرحل</span>
+                            {% else %}
+                                <span class="badge bg-secondary">غير معروف</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- زر عرض تفاصيل القيد -->
+                            <a href="{% url 'journal_entry_detail' entry.id %}" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> عرض
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<!-- ربط Bootstrap 5 من CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<style>
+/* تنسيق قسم لا توجد قيود */
+.empty-state img {
+    opacity: 0.7;
+}
+.empty-state h3 {
+    font-weight: 600;
+}
+/* يمكنك إضافة المزيد من التنسيقات هنا */
+</style>
+{% endblock %}

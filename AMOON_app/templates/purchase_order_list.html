@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>قائمة طلبات الشراء الخاصة بي</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: #f8f9fa;
+      direction: rtl;
+    }
+    .table thead th {
+      background-color: #343a40;
+      color: #fff;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+    .btn-info {
+      background-color: #17a2b8;
+      border-color: #17a2b8;
+    }
+    .dashboard {
+      margin-bottom: 20px;
+    }
+    .dashboard .card {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="text-center">قائمة طلبات الشراء الخاصة بي</h2>
+      {% if supplier and subcategory %}
+      <a href="{% url 'add_purchase_order' supplier.id subcategory.id %}">إضافة طلب شراء جديد</a>
+    {% else %}
+      <!-- عرض رابط أو رسالة بديلة -->
+      <a href="{% url 'supplier_list' %}">اختر المورد والفئة الفرعية أولاً</a>
+    {% endif %}
+      </div>
+    
+    <!-- قسم الداشبورد -->
+    <div class="dashboard row mb-4">
+      <div class="col-md-3">
+        <div class="card text-white bg-success">
+          <div class="card-body">
+            <h5 class="card-title">طلبات مقبولة</h5>
+            <p class="card-text fs-4">{{ accepted_count }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-white bg-danger">
+          <div class="card-body">
+            <h5 class="card-title">طلبات مرفوضة</h5>
+            <p class="card-text fs-4">{{ rejected_count }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-white bg-secondary">
+          <div class="card-body">
+            <h5 class="card-title">طلبات ملغاة</h5>
+            <p class="card-text fs-4">{{ cancelled_count }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-white bg-warning">
+          <div class="card-body">
+            <h5 class="card-title">طلبات بعرض سعر</h5>
+            <p class="card-text fs-4">{{ offer_sent_count }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th class="text-center">#</th>
+          <th class="text-center">المورد</th>
+          <th class="text-center">تاريخ الطلب</th>
+          <th class="text-center">الحالة</th>
+          <th class="text-center">الإجمالي</th>
+          <th class="text-center">إجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td class="text-center">{{ order.id }}</td>
+          <td class="text-center">{{ order.seller.company.name }}</td>
+          <td class="text-center">{{ order.created_at|date:"Y-m-d H:i" }}</td>
+          <td class="text-center">{{ order.get_status_display }}</td>
+          <td class="text-center">{{ order.total_cost }}</td>
+          <td class="text-center">
+            <a href="{% url 'order_detail' order.id %}" class="btn btn-info btn-sm">عرض التفاصيل</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center">لا توجد طلبات</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

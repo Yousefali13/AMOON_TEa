@@ -1,0 +1,184 @@
+<style>
+    /* تحسينات عامة */
+    body {
+        background-color: #f5f5f5;
+        padding: 20px;
+        font-family: 'Cairo', sans-serif;
+    }
+
+    .container-fluid {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 15px;
+        margin-top: 80px; /* لإضافة مسافة تحت شريط التنقل */
+    }
+
+    .row {
+        display: flex;
+        gap: 20px;
+    }
+
+    /* تصغير وتحسين CV */
+    .cv-container {
+        max-width: 900px !important;
+        margin: 2rem auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .col-lg-3 {
+        width: 25%;
+    }
+
+    .col-lg-9 {
+        width: 75%;
+    }
+
+    /* تحسين لوحة التحكم */
+    .control-panel {
+        position: sticky;
+        top: 80px; /* تعديل الموضع ليكون تحت شريط التنقل */
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+
+    .control-section {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .control-section:last-child {
+        border-bottom: none;
+    }
+
+    .control-section h4 {
+        font-size: 16px;
+        margin-bottom: 15px;
+        color: #333;
+        font-weight: 600;
+    }
+
+    /* تحسين الأزرار والعناصر */
+    .btn {
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #2196F3;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: #1976D2;
+        transform: translateY(-1px);
+    }
+
+    .form-control {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .form-control:focus {
+        border-color: #2196F3;
+        box-shadow: 0 0 0 2px rgba(33,150,243,0.1);
+    }
+
+    /* تحسين المسافات */
+    .main-content {
+        padding: 2rem;
+    }
+
+    .sidebar {
+        padding: 1.5rem;
+    }
+
+    .section {
+        margin-bottom: 2rem;
+    }
+
+    .section:last-child {
+        margin-bottom: 0;
+    }
+
+    /* التجاوب مع الشاشات */
+    @media (max-width: 992px) {
+        .row {
+            flex-direction: column;
+        }
+        
+        .col-lg-2, .col-lg-10 {
+            width: 100%;
+        }
+        
+        .cv-container {
+            margin: 1rem 0;
+            max-width: 100% !important;
+        }
+        
+        .control-panel {
+            position: static;
+        }
+
+        .col-lg-3, .col-lg-9 {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 10px;
+        }
+        
+        .container-fluid {
+            padding: 0 10px;
+            margin-top: 60px;
+        }
+        
+        .cv-container {
+            margin: 0;
+        }
+    }
+
+    /* تحسينات إضافية للـ CV */
+    .template-5 .cv-container {
+        max-width: 800px !important;
+    }
+
+    .template-5 .header {
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--primary-blue) 75%, transparent 75%);
+    }
+
+    .template-5 .main-sections {
+        padding: 0 2rem 2rem;
+    }
+
+    /* تحسين شكل نقاط المهارات */
+    .template-5 .skill-dots {
+        display: flex;
+        gap: 4px;
+    }
+
+    .template-5 .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #eee;
+    }
+
+    .template-5 .dot.filled {
+        background-color: var(--primary-blue);
+    }
+</style> 

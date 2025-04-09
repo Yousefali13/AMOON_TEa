@@ -1,0 +1,40 @@
+{% extends "home.html" %}
+{% block content %}
+<div class="container my-4">
+  <div class="card p-4">
+    <div class="card-header text-center">
+      <h3>إيصال استلام الطلب</h3>
+    </div>
+    <div class="card-body">
+      <p><strong>رقم الطلب:</strong> {{ order.id }}</p>
+      <p><strong>المورد:</strong> {{ order.supplier.company_name }}</p>
+      <p><strong>تاريخ الطلب:</strong> {{ order.date }}</p>
+      <hr>
+      <h4 class="text-center">تفاصيل الطلب</h4>
+      <table class="table table-bordered text-center">
+        <thead>
+          <tr>
+            <th>المنتج</th>
+            <th>الكمية</th>
+            <th>سعر الوحدة</th>
+            <th>الإجمالي</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.price_per_unit }}</td>
+            <td>{{ item.total_price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="text-center mt-3">
+        <button class="btn btn-primary" onclick="window.print()">طباعة الإيصال</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

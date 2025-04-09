@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <h1 class="text-dark">
+                <i class="fas fa-bell"></i> 
+                الإشعارات 
+                <button class="btn btn-info btn-sm" id="toggle-notifications">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </h1>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div id="notifications-container" class="collapse">
+                <ul class="list-group">
+                    {% for notification in notifications %}
+                    <li class="list-group-item {% if not notification.is_read %}bg-light{% endif %}">
+                        {{ notification.message }} 
+                        <small class="text-muted">{{ notification.timestamp|date:"Y-m-d H:i" }}</small>
+                    </li>
+                    {% empty %}
+                    <p class="text-center">لا توجد إشعارات.</p>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function(){
+        $("#toggle-notifications").click(function(){
+            $("#notifications-container").collapse('toggle');
+            $(this).find("i").toggleClass("fa-chevron-down fa-chevron-up"); // تغيير الأيقونة
+        });
+    });
+</script>
+{% endblock %}

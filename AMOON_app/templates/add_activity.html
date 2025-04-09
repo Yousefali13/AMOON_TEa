@@ -1,0 +1,168 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>CV</title>
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- AdminLTE CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+  <style>
+    .active-link { background-color: #007bff !important; color: white !important; }
+  </style>
+</head>
+{% block content %}
+<div class="wrapper">
+    <!-- ✅ القائمة الجانبية -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <a href="{% url 'home' %}" class="brand-link">
+            <img src="{% static 'images/logo.png' %}" class="brand-image img-circle elevation-3">
+            <span class="brand-text font-weight-light">Project ERP</span>
+        </a>
+        <div class="sidebar">
+            <div class="user-panel mt-3 d-flex">
+                <div class="image">
+                    <div class="text-center mb-3">
+                        <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_user.png' %}{% endif %}" 
+                             class="rounded-circle" width="80" height="80">
+                    </div>
+                </div>
+                <div class="info">
+                    <a href="{% url 'profile' %}" class="d-block">{{ user.get_full_name }}</a>
+                </div>
+            </div>
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" id="sidebar-menu">
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard' %}" class="nav-link">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>لوحة التحكم</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'accounting_dashboard' %}" class="nav-link">
+                            <i class="nav-icon fas fa-calculator"></i>
+                            <p>المحاسبة</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-chart-line"></i>
+                            <p>التقارير</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>إدارة المستخدمين</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'settings' %}" class="nav-link">
+                            <i class="nav-icon fas fa-cogs"></i>
+                            <p>الإعدادات</p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- ✅ محتوى الصفحة -->
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark"><i class="fas fa-tasks"></i> إضافة نشاط جديد</h1>
+                    </div>
+                    <div class="col-sm-6 text-end">
+                        <a href="{% url 'profile' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> الرجوع</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card card-primary shadow-lg">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <h3 class="card-title"><i class="fas fa-plus-circle"></i> تفاصيل النشاط</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" class="activity-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.as_p }}
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> حفظ النشاط</button>
+                                <a href="{% url 'profile' %}" class="btn btn-danger"><i class="fas fa-times"></i> إلغاء</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ✅ تخصيص القائمة الجانبية */
+    .sidebar-dark-primary {
+        background-color: #343a40 !important;
+    }
+    
+    /* ✅ تخصيص الكارد */
+    .card {
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* ✅ تخصيص النموذج */
+    .activity-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    .activity-form input, 
+    .activity-form textarea, 
+    .activity-form select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        font-size: 16px;
+    }
+
+    .activity-form button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 6px;
+    }
+
+    /* ✅ تمييز القائمة الجانبية */
+    .nav-sidebar .nav-item .nav-link {
+        border-radius: 6px;
+    }
+
+    .nav-sidebar .nav-item .nav-link.active {
+        background-color: #007bff !important;
+        color: white !important;
+    }
+</style>
+{% endblock %}

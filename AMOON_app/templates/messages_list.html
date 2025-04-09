@@ -1,0 +1,99 @@
+{% block content %}
+
+{% load static %} 
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة التحكم</title>
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- AdminLTE CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+  <style>
+    .active-link { background-color: #007bff !important; color: white !important; }
+  </style>
+</head>
+<div class="container mt-4">
+    <h3>💬 الرسائل</h3>
+    <div class="list-group">
+        {% for conversation in conversations %}
+            <!-- ✅ صورة المستخدم مع رابط -->
+                <img src="{{ conversation.profile_picture }}" class="rounded-circle chat-avatar" alt="صورة {{ conversation.user.get_full_name }}">
+            </a>
+
+            <!-- ✅ تفاصيل المحادثة -->
+            <div class="ms-3 chat-details">
+                <strong>{{ conversation.user.get_full_name }}</strong>
+                <p class="text-muted small m-0">{{ conversation.last_message }}</p>
+                <small class="text-muted">{{ conversation.last_message_time|date:"H:i - d/m/Y" }}</small>
+            </div>       
+            
+        
+
+        </a>
+        {% empty %}
+        <p class="text-muted">لا توجد محادثات بعد.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+<style>
+    /* ✅ تحسين تصميم القائمة */
+    .chat-item {
+        padding: 10px;
+        border-radius: 10px;
+        transition: background 0.3s ease-in-out;
+    }
+
+    .chat-item:hover {
+        background: #f1f1f1;
+    }
+
+    /* ✅ تحسين شكل الصورة */
+    .chat-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #007bff;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .chat-avatar:hover {
+        transform: scale(1.1);
+    }
+
+    /* ✅ تحسين تفاصيل المحادثة */
+    .chat-details {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-details strong {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .chat-details p {
+        font-size: 14px;
+        color: #666;
+        margin: 2px 0;
+    }
+
+    .chat-details small {
+        font-size: 12px;
+        color: #999;
+    }
+</style>
+
+
+
+
+

@@ -1,0 +1,63 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <!-- Main CV Form -->
+    <h2>المعلومات الأساسية</h2>
+    {{ cv_form.as_p }}
+    
+    <!-- Languages -->
+    <h2>اللغات</h2>
+    {{ language_formset.management_form }}
+    {% for form in language_formset %}
+        <div class="language-form">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+    
+    <!-- Certifications -->
+    <h2>الشهادات</h2>
+    {{ certification_formset.management_form }}
+    {% for form in certification_formset %}
+        <div class="certification-form">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+    
+    <!-- Experience -->
+    <h2>الخبرات العملية</h2>
+    {{ experience_formset.management_form }}
+    {% for form in experience_formset %}
+        <div class="experience-form">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+    
+    <!-- Education -->
+    <h2>التعليم</h2>
+    {{ education_formset.management_form }}
+    {% for form in education_formset %}
+        <div class="education-form">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+    
+    <!-- Social Links -->
+    <h2>روابط التواصل</h2>
+    {{ social_link_formset.management_form }}
+    {% for form in social_link_formset %}
+        <div class="social-link-form">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+    
+    <!-- Skills -->
+    <h2>المهارات</h2>
+    {{ skill_formset.management_form }}
+    {% for form in skill_formset %}
+        <div class="skill-form">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+    
+    <button type="submit">حفظ السيرة الذاتية</button>
+</form>
