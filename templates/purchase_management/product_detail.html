@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">{{ product.name }}</h2>
+                    <p class="card-text">{{ product.description }}</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>المخزون الحالي:</strong> 
+                                <span class="badge {% if product.current_stock <= product.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
+                                    {{ product.current_stock }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>الحد الأدنى للمخزون:</strong> {{ product.minimum_stock }}</p>
+                        </div>
+                    </div>
+                    <p><strong>سعر الوحدة:</strong> {{ product.unit_price }} ريال</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4>طلبات الشراء المرتبطة</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>التاريخ</th>
+                                    <th>الكمية</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order_item in related_orders %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'purchase_order_detail' order_item.order.id %}">
+                                            {{ order_item.order.order_number }}
+                                        </a>
+                                    </td>
+                                    <td>{{ order_item.order.created_at|date:"Y-m-d" }}</td>
+                                    <td>{{ order_item.quantity }}</td>
+                                    <td>
+                                        <span class="badge {% if order_item.order.status == 'pending' %}bg-warning
+                                                          {% elif order_item.order.status == 'approved' %}bg-info
+                                                          {% elif order_item.order.status == 'preparing' %}bg-primary
+                                                          {% elif order_item.order.status == 'prepared' %}bg-success
+                                                          {% elif order_item.order.status == 'shipped' %}bg-secondary
+                                                          {% else %}bg-danger{% endif %}">
+                                            {{ order_item.order.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">لا توجد طلبات شراء مرتبطة</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>إحصائيات سريعة</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>إجمالي الطلبات:</strong> {{ related_orders.count }}</p>
+                    <p><strong>الطلبات النشطة:</strong> {{ related_orders.filter(order__status__in=['pending', 'approved', 'preparing']).count }}</p>
+                    <p><strong>الطلبات المكتملة:</strong> {{ related_orders.filter(order__status='delivered').count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

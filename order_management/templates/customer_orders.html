@@ -1,0 +1,35 @@
+
+{% load static %}
+{% block content %}
+<div class="container my-4">
+  <h2>طلبات العملاء</h2>
+  {% if orders %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>رقم الطلب</th>
+          <th>تاريخ الطلب</th>
+          <th>العميل</th>
+          <th>الحالة</th>
+          <th>الإجمالي</th>
+          <th>التفاصيل</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.id }}</td>
+          <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+          <td>{{ order.customer.get_full_name }}</td>
+          <td>{{ order.get_status_display }}</td>
+          <td>{{ order.total_cost }}</td>
+          <td><a href="{% url 'order_detail' order.id %}" class="btn btn-primary btn-sm">عرض</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="text-center">لا توجد طلبات حتى الآن.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}إنشاء طلب شراء جديد{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">إنشاء طلب شراء جديد</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" id="orderForm">
+                {% csrf_token %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="order_number" class="form-label">رقم الطلب</label>
+                            <input type="text" class="form-control" id="order_number" name="order_number" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="supplier" class="form-label">المورد</label>
+                            <select class="form-select" id="supplier" name="supplier" required>
+                                <option value="">اختر المورد</option>
+                                {% for supplier in suppliers %}
+                                <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="expected_delivery_date" class="form-label">تاريخ التسليم المتوقع</label>
+                            <input type="date" class="form-control" id="expected_delivery_date" 
+                                   name="expected_delivery_date" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4>عناصر الطلب</h4>
+                    <div id="orderItems">
+                        <div class="order-item mb-3">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">المنتج</label>
+                                        <select class="form-select product-select" name="product_0" required>
+                                            <option value="">اختر المنتج</option>
+                                            {% for product in products %}
+                                            <option value="{{ product.id }}" data-price="{{ product.unit_price }}">
+                                                {{ product.name }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-3">
+                                        <label class="form-label">الكمية</label>
+                                        <input type="number" class="form-control quantity-input" 
+                                               name="quantity_0" min="1" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-3">
+                                        <label class="form-label">سعر الوحدة</label>
+                                        <input type="number" class="form-control unit-price-input" 
+                                               name="unit_price_0" step="0.01" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">ملاحظات</label>
+                                        <input type="text" class="form-control" name="notes_0">
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="mb-3">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button type="button" class="btn btn-danger remove-item">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="addItem">
+                        <i class="fas fa-plus"></i> إضافة عنصر
+                    </button>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">ملاحظات عامة</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="total_amount" class="form-label">المبلغ الإجمالي</label>
+                            <input type="number" class="form-control" id="total_amount" name="total_amount" 
+                                   step="0.01" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'purchase_order_list' %}" class="btn btn-secondary">إلغاء</a>
+                    <button type="submit" class="btn btn-primary">إنشاء الطلب</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const orderItems = document.getElementById('orderItems');
+    const addItemBtn = document.getElementById('addItem');
+    let itemCount = 1;
+
+    // إضافة عنصر جديد
+    addItemBtn.addEventListener('click', function() {
+        const template = orderItems.children[0].cloneNode(true);
+        
+        // تحديث أسماء الحقول
+        template.querySelectorAll('select, input').forEach(input => {
+            const name = input.getAttribute('name');
+            if (name) {
+                input.setAttribute('name', name.replace('_0', `_${itemCount}`));
+            }
+        });
+        
+        // إعادة تعيين القيم
+        template.querySelectorAll('input, select').forEach(input => {
+            input.value = '';
+        });
+        
+        orderItems.appendChild(template);
+        itemCount++;
+    });
+
+    // حذف عنصر
+    orderItems.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-item')) {
+            const item = e.target.closest('.order-item');
+            if (orderItems.children.length > 1) {
+                item.remove();
+                calculateTotal();
+            }
+        }
+    });
+
+    // تحديث السعر عند اختيار المنتج
+    orderItems.addEventListener('change', function(e) {
+        if (e.target.classList.contains('product-select')) {
+            const option = e.target.options[e.target.selectedIndex];
+            const unitPriceInput = e.target.closest('.order-item').querySelector('.unit-price-input');
+            unitPriceInput.value = option.dataset.price;
+            calculateTotal();
+        }
+    });
+
+    // تحديث المجموع عند تغيير الكمية
+    orderItems.addEventListener('input', function(e) {
+        if (e.target.classList.contains('quantity-input') || 
+            e.target.classList.contains('unit-price-input')) {
+            calculateTotal();
+        }
+    });
+
+    // حساب المجموع
+    function calculateTotal() {
+        let total = 0;
+        document.querySelectorAll('.order-item').forEach(item => {
+            const quantity = parseFloat(item.querySelector('.quantity-input').value) || 0;
+            const unitPrice = parseFloat(item.querySelector('.unit-price-input').value) || 0;
+            total += quantity * unitPrice;
+        });
+        document.getElementById('total_amount').value = total.toFixed(2);
+    }
+});
+</script>
+{% endblock %}
+{% endblock %} 

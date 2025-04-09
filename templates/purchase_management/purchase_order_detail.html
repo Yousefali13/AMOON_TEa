@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}تفاصيل طلب الشراء {{ order.order_number }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3>طلب رقم: {{ order.order_number }}</h3>
+                    <span class="badge {% if order.status == 'pending' %}bg-warning
+                                      {% elif order.status == 'approved' %}bg-info
+                                      {% elif order.status == 'preparing' %}bg-primary
+                                      {% elif order.status == 'prepared' %}bg-success
+                                      {% elif order.status == 'shipped' %}bg-secondary
+                                      {% else %}bg-danger{% endif %}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>المورد:</strong> {{ order.supplier.name }}</p>
+                            <p><strong>تاريخ الإنشاء:</strong> {{ order.created_at|date:"Y-m-d H:i" }}</p>
+                            <p><strong>تاريخ التسليم المتوقع:</strong> {{ order.expected_delivery_date|date:"Y-m-d" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>تم الإنشاء بواسطة:</strong> {{ order.created_by.username }}</p>
+                            <p><strong>المبلغ الإجمالي:</strong> {{ order.total_amount }} ريال</p>
+                        </div>
+                    </div>
+
+                    {% if order.notes %}
+                    <div class="mt-3">
+                        <h5>ملاحظات</h5>
+                        <p>{{ order.notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>عناصر الطلب</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>سعر الوحدة</th>
+                                    <th>المجموع</th>
+                                    <th>الكمية المجهزة</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.unit_price }} ريال</td>
+                                    <td>{{ item.quantity|multiply:item.unit_price }} ريال</td>
+                                    <td>{{ item.prepared_quantity }}</td>
+                                    <td>
+                                        {% if item.is_prepared %}
+                                        <span class="badge bg-success">تم التجهيز</span>
+                                        {% else %}
+                                        <span class="badge bg-warning">قيد التجهيز</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if order.status == 'approved' and not item.is_prepared %}
+                                        <form method="post" action="{% url 'prepare_order' order.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="item_id" value="{{ item.id }}">
+                                            <div class="input-group input-group-sm">
+                                                <input type="number" name="prepared_quantity" class="form-control" 
+                                                       min="0" max="{{ item.quantity }}" value="{{ item.prepared_quantity }}">
+                                                <button type="submit" class="btn btn-primary">تحديث</button>
+                                            </div>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>المجموع الكلي:</strong></td>
+                                    <td colspan="4"><strong>{{ order.total_amount }} ريال</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4>سجل الحالات</h4>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% for status in order.status_history.all %}
+                        <div class="timeline-item">
+                            <div class="timeline-date">
+                                {{ status.changed_at|date:"Y-m-d H:i" }}
+                            </div>
+                            <div class="timeline-content">
+                                <h5>{{ status.get_status_display }}</h5>
+                                <p>تم التغيير بواسطة: {{ status.changed_by.username }}</p>
+                                {% if status.notes %}
+                                <p>{{ status.notes }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>الإجراءات</h4>
+                </div>
+                <div class="card-body">
+                    {% if order.status == 'pending' and user == order.created_by %}
+                    <a href="{% url 'approve_order' order.id %}" class="btn btn-success w-100 mb-2">
+                        موافقة على الطلب
+                    </a>
+                    {% endif %}
+
+                    {% if order.status == 'prepared' %}
+                    <a href="{% url 'ship_order' order.id %}" class="btn btn-primary w-100 mb-2">
+                        تم الشحن
+                    </a>
+                    {% endif %}
+
+                    {% if order.status == 'shipped' %}
+                    <a href="{% url 'deliver_order' order.id %}" class="btn btn-success w-100 mb-2">
+                        تم التسليم
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 20px;
+}
+
+.timeline-item:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e9ecef;
+}
+
+.timeline-item:after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #007bff;
+}
+
+.timeline-date {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.timeline-content h5 {
+    margin: 0 0 10px 0;
+}
+</style>
+{% endblock %}
+{% endblock %} 

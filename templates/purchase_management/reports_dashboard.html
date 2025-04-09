@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}لوحة التقارير{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">لوحة التقارير</h2>
+
+    <div class="row">
+        <!-- إحصائيات المنتجات -->
+        <div class="col-md-3 mb-4">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">المنتجات منخفضة المخزون</h5>
+                    <p class="card-text display-4">{{ low_stock_products }}</p>
+                    <a href="{% url 'product_list' %}" class="btn btn-light">عرض المنتجات</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- إحصائيات الطلبات -->
+        <div class="col-md-3 mb-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">الطلبات النشطة</h5>
+                    <p class="card-text display-4">{{ pending_orders }}</p>
+                    <a href="{% url 'purchase_order_list' %}" class="btn btn-light">عرض الطلبات</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- إحصائيات الموردين -->
+        <div class="col-md-3 mb-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">الموردين النشطين</h5>
+                    <p class="card-text display-4">{{ active_suppliers }}</p>
+                    <a href="{% url 'supplier_list' %}" class="btn btn-light">عرض الموردين</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- إجمالي الطلبات -->
+        <div class="col-md-3 mb-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">إجمالي الطلبات</h5>
+                    <p class="card-text display-4">{{ total_orders }}</p>
+                    <a href="{% url 'purchase_order_list' %}" class="btn btn-light">عرض جميع الطلبات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- حركات المخزون الأخيرة -->
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>حركات المخزون الأخيرة</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>المنتج</th>
+                                    <th>نوع الحركة</th>
+                                    <th>الكمية</th>
+                                    <th>رقم المرجع</th>
+                                    <th>تم بواسطة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in recent_transactions %}
+                                <tr>
+                                    <td>{{ transaction.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td>{{ transaction.product.name }}</td>
+                                    <td>
+                                        <span class="badge {% if transaction.transaction_type == 'purchase' %}bg-success
+                                                          {% elif transaction.transaction_type == 'sale' %}bg-danger
+                                                          {% elif transaction.transaction_type == 'adjustment' %}bg-warning
+                                                          {% else %}bg-info{% endif %}">
+                                            {{ transaction.get_transaction_type_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ transaction.quantity }}</td>
+                                    <td>{{ transaction.reference_number }}</td>
+                                    <td>{{ transaction.created_by.username }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">لا توجد حركات مخزون</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- إحصائيات سريعة -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>إحصائيات سريعة</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            الطلبات المكتملة
+                            <span class="badge bg-success rounded-pill">{{ delivered_orders }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            الطلبات قيد التجهيز
+                            <span class="badge bg-warning rounded-pill">{{ pending_orders }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            المنتجات منخفضة المخزون
+                            <span class="badge bg-danger rounded-pill">{{ low_stock_products }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
